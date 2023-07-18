@@ -1,5 +1,7 @@
 package com.polizasservice.polizasservice.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.polizasservice.polizasservice.configuracion.Loggs;
 import com.polizasservice.polizasservice.configuracion.FiltraRespuesta;
 import com.polizasservice.polizasservice.dao.PolizasDAO;
@@ -31,8 +33,11 @@ public class PolizaService extends PolizasDAO {
 
     String mensaje = "";
     @Override
-    public ResponseEntity<String> consultarPolizas(int poliza, int empleado )  {
+    public ObjectNode consultarPolizas(int poliza, int empleado )  {
         String fallo = String.valueOf(empleado);
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode responseObj = objectMapper.createObjectNode();
+
         try{
         loggs.loggsDebug("SE EJECUTA LA FUNCION: fun_buscarPoliza");
         String sql = "select IDPoliza,cantidad,nombre,apellido,SKU,articulo from fun_buscarPoliza(?,?)";
@@ -53,20 +58,21 @@ public class PolizaService extends PolizasDAO {
                 listaLimpia.add(polizaLimpia);
 
             }
-
+            JsonResponseObjesct jsonResponseObjesct =  new JsonResponseObjesct();
             respuesta = jsonResponse.RespuestaJson(listaLimpia);
+            responseObj = jsonResponseObjesct.RespuestaJsonObject(listaLimpia);
             listaLimpia.clear();
-            return respuesta;
+            return responseObj;
             }
 
-            return respuesta;
+            return responseObj;
         }
 
         catch (Exception ex){
              mensaje = "Ha ocurrido un error al consultar la poliza";
             respuesta = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
             loggs.loggsError("ERROR AL EJECUTAR LA FUNCION fun_buscarPoliza: "+ex);
-            return respuesta;
+            return responseObj;
         }
 
     }

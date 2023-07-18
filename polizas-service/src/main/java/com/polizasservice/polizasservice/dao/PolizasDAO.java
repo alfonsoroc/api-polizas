@@ -1,6 +1,7 @@
 package com.polizasservice.polizasservice.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.polizasservice.polizasservice.configuracion.Loggs;
 import com.polizasservice.polizasservice.dto.PolizasDTO;
 import com.polizasservice.polizasservice.service.JsonResponse;
@@ -24,24 +25,27 @@ public class PolizasDAO {
     protected JdbcTemplate jdbcTemplate;
 
 
-    public ResponseEntity<String> consultarPolizas(int Ipoliza, int Iempleado )  {
+    public ObjectNode consultarPolizas(int Ipoliza, int Iempleado )  {
         StatusMensaje statusMensaje =  new StatusMensaje();
         String mensaje;
         int opcion = 0;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode responseObj = objectMapper.createObjectNode();
+
         ResponseEntity<String> respuesta = ResponseEntity.ok().build();
         try{
             String sql = "select IDPoliza,cantidad,nombre,apellido,SKU,articulo from fun_buscarPoliza(?,?)";
             List <PolizasDTO> resultadoConsultaPolizas = jdbcTemplate.query(sql,new Object[]{Ipoliza,Iempleado}, new BeanPropertyRowMapper<>(PolizasDTO.class));
 
             resultadoConsultaPolizas.clear();
-            return respuesta;
+            return responseObj;
 
         }
         catch (Exception ex){
             mensaje = "Ha ocurrido un error al consultar la poliza";
             respuesta = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
         }
-        return respuesta;
+        return responseObj;
     }
 
 

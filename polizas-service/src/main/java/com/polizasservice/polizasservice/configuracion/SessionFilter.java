@@ -9,7 +9,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,12 +18,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
-import org.w3c.dom.stylesheets.MediaList;
-
-import javax.print.attribute.standard.MediaSize;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
+
 
 
 @Component
@@ -39,10 +36,8 @@ public class SessionFilter implements Filter {
     HttpServletRequest req = (HttpServletRequest) request;
     final HttpServletResponse res = (HttpServletResponse) response;
     final ObjectMapper objectMapper = new ObjectMapper();
-    String method = req.getMethod();
-    String uri = req.getRequestURI();
+
     boolean filterRedirection = false;
-    boolean flagValidaSSO = true;
     try{
     if(appConfig.isIgnoreSession()){
       filterRedirection = validateSSO(req,res,objectMapper);

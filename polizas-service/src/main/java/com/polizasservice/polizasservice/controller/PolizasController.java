@@ -1,6 +1,8 @@
 package com.polizasservice.polizasservice.controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.polizasservice.polizasservice.dao.PolizasDAO;
 import com.polizasservice.polizasservice.service.StatusMensaje;
 
@@ -16,12 +18,14 @@ public class PolizasController {
 
 
     @GetMapping("/buscar")
-    public ResponseEntity<String> BuscarPolizas(
+    public ObjectNode BuscarPolizas(
             @RequestParam int folio,
             @RequestParam int empleado
     )  {
         StatusMensaje statusMensaje = new StatusMensaje();
         ResponseEntity<String> respuesta = ResponseEntity.ok().build();
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode responseObj = objectMapper.createObjectNode();
         try {
             return polizasDao.consultarPolizas(folio,empleado);
         }
@@ -29,7 +33,7 @@ public class PolizasController {
             int opcion = 0;
             String mensaje = "Ha ocurrido un error al consltar la poliza";
             respuesta = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
-            return respuesta;
+            return responseObj;
         }
 
     }
