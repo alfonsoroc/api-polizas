@@ -6,6 +6,7 @@ import com.polizasservice.polizasservice.configuracion.Loggs;
 import com.polizasservice.polizasservice.dto.PolizasDTO;
 import com.polizasservice.polizasservice.service.JsonResponse;
 
+import com.polizasservice.polizasservice.service.JsonResponseObject;
 import com.polizasservice.polizasservice.service.StatusMensaje;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class PolizasDAO {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode responseObj = objectMapper.createObjectNode();
 
-        ResponseEntity<String> respuesta = ResponseEntity.ok().build();
+
         try{
             String sql = "select IDPoliza,cantidad,nombre,apellido,SKU,articulo from fun_buscarPoliza(?,?)";
             List <PolizasDTO> resultadoConsultaPolizas = jdbcTemplate.query(sql,new Object[]{Ipoliza,Iempleado}, new BeanPropertyRowMapper<>(PolizasDTO.class));
@@ -43,13 +44,16 @@ public class PolizasDAO {
         }
         catch (Exception ex){
             mensaje = "Ha ocurrido un error al consultar la poliza";
-            respuesta = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
+            responseObj = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
         }
         return responseObj;
     }
 
 
-    public ResponseEntity<String> GuardarPoliza (float cantidad, String fecha,int empleado, int sku)  {
+    public ObjectNode GuardarPoliza (float cantidad, String fecha,int empleado, int sku)  {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode responseObj = objectMapper.createObjectNode();
         String formatoFecha = "yyyy-MM-dd";
         DateFormat dateFormat = new SimpleDateFormat(formatoFecha);
         ResponseEntity<String> respuesta = ResponseEntity.ok().build();
@@ -62,14 +66,17 @@ public class PolizasDAO {
             Date fechaConsulta = dateFormat.parse(fecha);
             listPolizasDto = jdbcTemplate.query(sql, new Object[]{cantidad, fechaConsulta, empleado, sku}, new BeanPropertyRowMapper<>(PolizasDTO.class));
             listPolizasDto.clear();
-            return respuesta;
+            return responseObj;
         }catch (Exception ex){
             mensaje = "Ha ocurrido un error al eliminar la poliza";
-            respuesta = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
+            responseObj = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
         }
-        return respuesta;
+        return responseObj;
     }
-    public ResponseEntity<String> ActaliazrPoliza (int poliza,float cantidad,int empleado,int sku) {
+    public ObjectNode ActaliazrPoliza (int poliza,float cantidad,int empleado,int sku) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode responseObj = objectMapper.createObjectNode();
         StatusMensaje statusMensaje =  new StatusMensaje();
         ResponseEntity<String> respuesta = ResponseEntity.ok().build();
         String sql = "SELECT fun_actualizarPoliza(?,?,?,?)";
@@ -81,17 +88,20 @@ public class PolizasDAO {
              opcion = 1;
              String mensaje =  "Se ha actualizado correctamente la poliza #: "+sku;
 
-             respuesta = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
+             responseObj = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
          }
 
         }catch (Exception ex){
             String mensaje = "Ha ocurrido un error al actualizar la poliza #: "+sku;
-            respuesta = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
+            responseObj = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
         }
-        return respuesta;
+        return responseObj;
     }
 
-    public ResponseEntity<String> eliminarPoliza(int poliza) {
+    public ObjectNode eliminarPoliza(int poliza) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode responseObj = objectMapper.createObjectNode();
+
         StatusMensaje statusMensaje = new StatusMensaje();
         ResponseEntity<String> respuesta =  ResponseEntity.ok().build();
         String sql = "SELECT fun_eliminarPoliza(?)";
@@ -104,13 +114,13 @@ public class PolizasDAO {
           if(folio != null && folio == poliza) {
               opcion = 1;
               mensaje = "Se ha eliminado correctamenta la poliza #:" + folio;
-              respuesta = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
+              responseObj = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
           }
         }catch (Exception ex){
             mensaje = "Ha ocurrido un error al eliminar la poliza"+poliza;
-            respuesta = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
+            responseObj = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
         }
-        return respuesta;
+        return responseObj;
 
 
         }

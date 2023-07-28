@@ -22,8 +22,8 @@ public class PolizaService extends PolizasDAO {
     protected JdbcTemplate jdbcTemplateService;
 
     Loggs loggs = new Loggs();
-    ResponseEntity<String> respuesta = ResponseEntity.ok().build();
-    JsonResponse jsonResponse = new JsonResponse();
+
+    JsonResponseObject jsonResponseObjesct =  new JsonResponseObject();
     StatusMensaje statusMensaje = new StatusMensaje();
 
     List<PolizasDTO> listPolizasDto = new ArrayList<>();
@@ -34,9 +34,8 @@ public class PolizaService extends PolizasDAO {
     String mensaje = "";
     @Override
     public ObjectNode consultarPolizas(int poliza, int empleado )  {
-        String fallo = String.valueOf(empleado);
         ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode responseObj = objectMapper.createObjectNode();
+        ObjectNode responseService = objectMapper.createObjectNode();
 
         try{
         loggs.loggsDebug("SE EJECUTA LA FUNCION: fun_buscarPoliza");
@@ -45,7 +44,7 @@ public class PolizaService extends PolizasDAO {
 
             if(listPolizasDto.isEmpty()){
                 mensaje   = "No se encontro la poliza #"+poliza;
-                respuesta = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
+                responseService = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
             }else{
             for(PolizasDTO polizasDTO : listPolizasDto){
                 PolizasDTO polizaLimpia = new PolizasDTO();
@@ -58,27 +57,28 @@ public class PolizaService extends PolizasDAO {
                 listaLimpia.add(polizaLimpia);
 
             }
-            JsonResponseObjesct jsonResponseObjesct =  new JsonResponseObjesct();
-            respuesta = jsonResponse.RespuestaJson(listaLimpia);
-            responseObj = jsonResponseObjesct.RespuestaJsonObject(listaLimpia);
+
+
+            responseService = jsonResponseObjesct.RespuestaJsonObject(listaLimpia);
             listaLimpia.clear();
-            return responseObj;
+            return responseService;
             }
 
-            return responseObj;
+            return responseService;
         }
 
         catch (Exception ex){
              mensaje = "Ha ocurrido un error al consultar la poliza";
-            respuesta = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
+            responseService = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
             loggs.loggsError("ERROR AL EJECUTAR LA FUNCION fun_buscarPoliza: "+ex);
-            return responseObj;
+            return responseService;
         }
 
     }
     @Override
-    public ResponseEntity<String> GuardarPoliza (float cantidad, String fecha, int empleado, int sku)  {
-
+    public ObjectNode GuardarPoliza (float cantidad, String fecha, int empleado, int sku)  {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode responseObj = objectMapper.createObjectNode();
         String formatoFecha = "yyyy-MM-dd";
         DateFormat dateFormat = new SimpleDateFormat(formatoFecha);
 
@@ -99,23 +99,27 @@ public class PolizaService extends PolizasDAO {
                 polizaLimpia.setSKU(polizasDTO.getSKU());
                 polizaLimpia.setArticulo(FiltraRespuesta.LimpiarCode(polizasDTO.getArticulo()));
                 listaLimpia.add(polizaLimpia);
+                responseObj = jsonResponseObjesct.RespuestaJsonObject(listaLimpia);
 
-                respuesta = jsonResponse.RespuestaJson(listaLimpia);
             }
+
             listaLimpia.clear();
-            return respuesta;
+            return responseObj;
         }catch (Exception ex){
             loggs.loggsError("ERROR AL EJECUTAR LA FUNCION fun_crearPoliza: "+ex);
             mensaje = "Ha ocurrido un error en los grabados de la poliza";
 
-          respuesta =  statusMensaje.RetornoMensajeStatus(mensaje,opcion);
+            responseObj =  statusMensaje.RetornoMensajeStatus(mensaje,opcion);
 
-          return respuesta;
+          return responseObj;
         }
 
     }
     @Override
-    public ResponseEntity<String> ActaliazrPoliza (int poliza,float cantidad,int empleado,int sku){
+    public ObjectNode ActaliazrPoliza (int poliza,float cantidad,int empleado,int sku){
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode responseObj = objectMapper.createObjectNode();
 
         String sql = "SELECT fun_actualizarPoliza(?,?,?,?)";
         Integer folio;
@@ -128,18 +132,21 @@ public class PolizaService extends PolizasDAO {
                 opcion = 1;
                 mensaje =  "Se ha actualizado correctamente la poliza #: "+poliza;
 
-                respuesta = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
+                responseObj = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
             }
 
         }catch (Exception ex){
             mensaje = "Ha ocurrido un error al actualizar la poliza #: "+sku;
-            respuesta = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
+            responseObj = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
             loggs.loggsError("ERROR AL EJECUTAR LA FUNCION fun_actualizarPoliza: "+ex);
         }
-        return respuesta;
+        return responseObj;
     }
     @Override
-    public ResponseEntity<String> eliminarPoliza(int poliza) {
+    public ObjectNode eliminarPoliza(int poliza) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode responseObj = objectMapper.createObjectNode();
 
         String sql = "SELECT fun_eliminarPoliza(?)";
         Integer folio;
@@ -151,16 +158,16 @@ public class PolizaService extends PolizasDAO {
             if(folio != null && folio == poliza) {
                     opcion = 1;
                     mensaje = "Se ha eliminado correctamenta la poliza #:" + folio;
-                    respuesta = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
+                responseObj = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
             }
 
         }catch (Exception ex){
             mensaje = "Ha ocurrido un error al eliminar la poliza"+poliza;
-            respuesta = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
+            responseObj = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
             loggs.loggsError("ERROR AL EJECUTAR LA FUNCION fun_eliminarPoliza: "+ex);
 
         }
-        return respuesta;
+        return responseObj;
     }
 
 

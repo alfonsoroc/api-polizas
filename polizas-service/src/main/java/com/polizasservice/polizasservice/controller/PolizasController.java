@@ -23,7 +23,7 @@ public class PolizasController {
             @RequestParam int empleado
     )  {
         StatusMensaje statusMensaje = new StatusMensaje();
-        ResponseEntity<String> respuesta = ResponseEntity.ok().build();
+
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode responseObj = objectMapper.createObjectNode();
         try {
@@ -32,14 +32,14 @@ public class PolizasController {
         catch (Exception ex){
             int opcion = 0;
             String mensaje = "Ha ocurrido un error al consltar la poliza";
-            respuesta = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
+            responseObj = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
             return responseObj;
         }
 
     }
 
     @GetMapping("/Guardar")
-    public ResponseEntity<String> GuardarPolizas(
+    public ObjectNode GuardarPolizas(
             @RequestParam float cantidad,
             @RequestParam String fecha,
             @RequestParam int empleado,
@@ -49,7 +49,7 @@ public class PolizasController {
     }
 
     @GetMapping("/Actualizar")
-    public ResponseEntity<String> Actualizar(
+    public ObjectNode Actualizar(
             @RequestParam int poliza,
             @RequestParam float cantidad,
             @RequestParam int empleado,
@@ -59,7 +59,7 @@ public class PolizasController {
     }
 
     @GetMapping("/eliminar")
-    public ResponseEntity<String> eliminar(
+    public ObjectNode eliminar(
             @RequestParam int poliza
     ){
         return polizasDao.eliminarPoliza(poliza);

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.ResponseEntity;
 
 public class StatusMensaje {
-  public ResponseEntity<String> RetornoMensajeStatus(String mensaje, int opcion){
+  public ObjectNode RetornoMensajeStatus(String mensaje, int opcion){
       ObjectMapper objectMapper = new ObjectMapper();
       ObjectNode responseObj = objectMapper.createObjectNode();
       ObjectNode meta = objectMapper.createObjectNode();
@@ -31,6 +31,7 @@ public class StatusMensaje {
 
               data.put("Mensaje",mensaje);
               responseObj.set("data", data);
+
               responseArray.add(responseObj);
               String jsonCorrecto = responseArray.toString();
               respuesta = ResponseEntity.ok(jsonCorrecto);
@@ -40,7 +41,7 @@ public class StatusMensaje {
 
 
       }
-        return respuesta;
+        return responseObj;
 
 
 

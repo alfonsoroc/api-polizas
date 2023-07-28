@@ -8,6 +8,8 @@ import com.polizasservice.polizasservice.dto.WebResponseDTO;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.core.annotation.Order;
@@ -28,6 +30,9 @@ import java.nio.charset.StandardCharsets;
 public class SessionFilter implements Filter {
   @Autowired
   private AppConfig appConfig;
+
+  @Autowired
+  private CacheController cacheController;
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -77,7 +82,9 @@ public class SessionFilter implements Filter {
                       new Meta(AppMessages.JWT_ERROR,401,AppMessages.UNAUTHORISED_MESSAGE))));
       filterRedirection = false;
     } else {
-      if (req.getHeader(HttpHeaders.AUTHORIZATION) != null) {
+       if (req.getHeader(HttpHeaders.AUTHORIZATION) != null) {
+        String tokenValida = req.getHeader(HttpHeaders.AUTHORIZATION);
+       String valida = cacheController.obtenerToken(tokenValida);
         filterRedirection = callVerify(req, res, objectMapper);
       } else {
         filterRedirection = true;
@@ -102,6 +109,10 @@ public class SessionFilter implements Filter {
       ResponseEntity<String> authResponse = RestUtil.post(appConfig.getAuthUriNpos(), "", headers);
       //respuesta sin error
       if (authResponse.getStatusCode() == HttpStatus.OK) {
+        String jsonString = authResponse.getBody();
+        JSONObject json = new JSONObject(jsonString);
+        String token = json.getJSONObject("data").getString("token");
+        String valida = cacheController.guardarToken(token);
         valido = true;
         //token valido
       } else {
