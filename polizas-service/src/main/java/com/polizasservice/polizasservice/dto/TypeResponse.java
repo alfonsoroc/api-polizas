@@ -10,4 +10,6 @@ public class TypeResponse {
 
     public static final short TYPE_RESTICTIVE= 5;
     public static final short TYPE_UNAUTHORISED = 11;
+
+    public static final short TYPE_OUT = 40;
 }

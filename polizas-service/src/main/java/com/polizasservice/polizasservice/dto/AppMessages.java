@@ -14,4 +14,6 @@ public class AppMessages {
     public static final String CIPHER_ERROR = "CIPHER_ERROR";
     public static final String UNAUTHORIZED_MESSAGE = "Usted no está autorizado para acceder este recurso.";
     public static final String INVALID_REQUEST = "Petición invalida";
+
+    public static final String OUT_MESSAGE = "Vida de Token ha caducado.";
 }

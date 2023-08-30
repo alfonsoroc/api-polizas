@@ -11,168 +11,141 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Repository
-public class PolizaService extends PolizasDAO {
+@Service
+public class PolizaService {
     @Autowired
     protected JdbcTemplate jdbcTemplateService;
 
+    @Autowired
+    protected InventarioService inventarioService;
+
+    @Autowired
+    protected PolizasDAO polizasDAO;
+
     Loggs loggs = new Loggs();
 
-    JsonResponseObject jsonResponseObjesct =  new JsonResponseObject();
+    JsonResponseObject jsonResponseObjesct = new JsonResponseObject();
     StatusMensaje statusMensaje = new StatusMensaje();
-
-    List<PolizasDTO> listPolizasDto = new ArrayList<>();
-    List<PolizasDTO> listaLimpia = new ArrayList<>();
 
     int opcion = 0;
 
     String mensaje = "";
-    @Override
-    public ObjectNode consultarPolizas(int poliza, int empleado )  {
+
+    public ObjectNode consultarPolizas(int poliza, int empleado) {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode responseService = objectMapper.createObjectNode();
 
-        try{
-        loggs.loggsDebug("SE EJECUTA LA FUNCION: fun_buscarPoliza");
-        String sql = "select IDPoliza,cantidad,nombre,apellido,SKU,articulo from fun_buscarPoliza(?,?)";
-            listPolizasDto = jdbcTemplateService.query(sql,new Object[]{poliza,empleado}, new BeanPropertyRowMapper<>(PolizasDTO.class));
+        try {
+            List<PolizasDTO> polizasService = polizasDAO.consultarPolizas(poliza, empleado);
+            if (polizasService.size() > 0) {
+                responseService = jsonResponseObjesct.RespuestaJsonObject(polizasService);
 
-            if(listPolizasDto.isEmpty()){
-                mensaje   = "No se encontro la poliza #"+poliza;
-                responseService = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
-            }else{
-            for(PolizasDTO polizasDTO : listPolizasDto){
-                PolizasDTO polizaLimpia = new PolizasDTO();
-                polizaLimpia.setIDPoliza(polizasDTO.getIDPoliza());
-                polizaLimpia.setCantidad(polizasDTO.getCantidad());
-                polizaLimpia.setNombre(FiltraRespuesta.LimpiarCode(polizasDTO.getNombre()));
-                polizaLimpia.setApellido(FiltraRespuesta.LimpiarCode(polizasDTO.getApellido()));
-                polizaLimpia.setSKU(polizasDTO.getSKU());
-                polizaLimpia.setArticulo(FiltraRespuesta.LimpiarCode(polizasDTO.getArticulo()));
-                listaLimpia.add(polizaLimpia);
-
+            } else {
+                mensaje = "Error al consultar poliza con empleado:"+empleado;
+                responseService = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
             }
-
-
-            responseService = jsonResponseObjesct.RespuestaJsonObject(listaLimpia);
-            listaLimpia.clear();
             return responseService;
-            }
-
+        } catch (Exception ex) {
+            mensaje = "Ha ocurrido un error al consultar la poliza";
+            responseService = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
             return responseService;
+
         }
 
-        catch (Exception ex){
-             mensaje = "Ha ocurrido un error al consultar la poliza";
-            responseService = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
-            loggs.loggsError("ERROR AL EJECUTAR LA FUNCION fun_buscarPoliza: "+ex);
-            return responseService;
-        }
 
     }
-    @Override
-    public ObjectNode GuardarPoliza (float cantidad, String fecha, int empleado, int sku)  {
+
+    public ObjectNode GuardarPoliza(float cantidad, int empleado, int sku) {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode responseObj = objectMapper.createObjectNode();
-        String formatoFecha = "yyyy-MM-dd";
-        DateFormat dateFormat = new SimpleDateFormat(formatoFecha);
 
+        ObjectNode consultaInventario = inventarioService.consultarInventario(sku);
 
-        try {
-            Date fechaConsulta = dateFormat.parse(fecha);
-            loggs.loggsDebug("SE EJECUTA LA FUNCION fun_crearPoliza");
-            String sql = "Select IDPoliza,cantidad,nombre,apellido,SKU,articulo from fun_crearPoliza(?,?,?,?) ";
-            listPolizasDto = jdbcTemplateService.query(sql, new Object[]{cantidad, fechaConsulta, empleado, sku}, new BeanPropertyRowMapper<>(PolizasDTO.class));
+        float cantidadService =(float) consultaInventario.get("data").get(0).get("cantidad").asDouble();
+        if(cantidadService < cantidad){
 
+          return statusMensaje.RetornoMensajeStatus("Cantidad excede existencia de sku en inventario",opcion);
+        }else {
+            try {
+                List<PolizasDTO> listaPoliza = polizasDAO.GuardarPoliza(cantidad, empleado, sku);
+                if (listaPoliza.size() > 0) {
+                    responseObj = jsonResponseObjesct.RespuestaJsonObject(listaPoliza);
+                } else {
 
-            for (PolizasDTO polizasDTO : listPolizasDto) {
-                PolizasDTO polizaLimpia = new PolizasDTO();
-                polizaLimpia.setIDPoliza(polizasDTO.getIDPoliza());
-                polizaLimpia.setCantidad(polizasDTO.getCantidad());
-                polizaLimpia.setNombre(FiltraRespuesta.LimpiarCode(polizasDTO.getNombre()));
-                polizaLimpia.setApellido(FiltraRespuesta.LimpiarCode(polizasDTO.getApellido()));
-                polizaLimpia.setSKU(polizasDTO.getSKU());
-                polizaLimpia.setArticulo(FiltraRespuesta.LimpiarCode(polizasDTO.getArticulo()));
-                listaLimpia.add(polizaLimpia);
-                responseObj = jsonResponseObjesct.RespuestaJsonObject(listaLimpia);
+                }
 
+            } catch (Exception ex) {
+                mensaje = "Ha ocurrido un error en los grabados de la poliza";
+                responseObj = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
+
+                return responseObj;
             }
-
-            listaLimpia.clear();
             return responseObj;
-        }catch (Exception ex){
-            loggs.loggsError("ERROR AL EJECUTAR LA FUNCION fun_crearPoliza: "+ex);
-            mensaje = "Ha ocurrido un error en los grabados de la poliza";
-
-            responseObj =  statusMensaje.RetornoMensajeStatus(mensaje,opcion);
-
-          return responseObj;
         }
-
     }
-    @Override
-    public ObjectNode ActaliazrPoliza (int poliza,float cantidad,int empleado,int sku){
+
+    public ObjectNode ActaliazrPoliza(int poliza, float cantidad, int sku) {
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode responseObj = objectMapper.createObjectNode();
-
-        String sql = "SELECT fun_actualizarPoliza(?,?,?,?)";
         Integer folio;
+        ObjectNode consultaInventario = inventarioService.consultarInventario(sku);
 
-        try {
-            loggs.loggsDebug("SE EJECUTA LA FUNCION: fun_actualizarPoliza");
-            folio = jdbcTemplateService.queryForObject(sql,new Object[]{poliza,cantidad,empleado,sku},Integer.class);
+        float cantidadService =(float) consultaInventario.get("data").get(0).get("cantidad").asDouble();
+        if(cantidadService < cantidad){
 
-            if(folio != null && folio == poliza){
-                opcion = 1;
-                mensaje =  "Se ha actualizado correctamente la poliza #: "+poliza;
+            return statusMensaje.RetornoMensajeStatus("Cantidad excede existencia de sku en inventario",0);
+        }else {
 
-                responseObj = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
+            try {
+                folio = polizasDAO.ActaliazrPoliza(poliza, cantidad, sku);
+
+                if (folio != null && folio == poliza) {
+                    opcion = 1;
+                    mensaje = "Se ha actualizado correctamente la poliza #:" + poliza;
+                    responseObj = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
+                } else {
+                    throw new Exception();
+                }
+
+            } catch (Exception ex) {
+
+                mensaje = "Ha ocurrido un error al actualizar la poliza #: " + poliza;
+                responseObj = statusMensaje.RetornoMensajeStatus(mensaje, 0);
+
             }
-
-        }catch (Exception ex){
-            mensaje = "Ha ocurrido un error al actualizar la poliza #: "+sku;
-            responseObj = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
-            loggs.loggsError("ERROR AL EJECUTAR LA FUNCION fun_actualizarPoliza: "+ex);
+            return responseObj;
         }
-        return responseObj;
     }
-    @Override
+
     public ObjectNode eliminarPoliza(int poliza) {
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode responseObj = objectMapper.createObjectNode();
 
-        String sql = "SELECT fun_eliminarPoliza(?)";
         Integer folio;
         try {
+            folio = polizasDAO.eliminarPoliza(poliza);
 
-            loggs.loggsDebug("SE EJECUTA LA FUNCION: fun_eliminarPoliza");
-            folio = jdbcTemplateService.queryForObject(sql,new Object[]{poliza},Integer.class);
-
-            if(folio != null && folio == poliza) {
-                    opcion = 1;
-                    mensaje = "Se ha eliminado correctamenta la poliza #:" + folio;
+            if (folio != null && folio == poliza) {
+                opcion = 1;
+                mensaje = "Se ha eliminado correctamenta la poliza #:"+folio;
                 responseObj = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
             }
 
-        }catch (Exception ex){
-            mensaje = "Ha ocurrido un error al eliminar la poliza"+poliza;
-            responseObj = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
-            loggs.loggsError("ERROR AL EJECUTAR LA FUNCION fun_eliminarPoliza: "+ex);
+        } catch (Exception ex) {
+            mensaje = "Ha ocurrido un error al eliminar la poliza" + poliza;
+            responseObj = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
 
         }
         return responseObj;
     }
-
-
-
-
 
 
 }

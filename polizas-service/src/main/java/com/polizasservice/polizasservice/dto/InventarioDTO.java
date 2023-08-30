@@ -2,10 +2,10 @@ package com.polizasservice.polizasservice.dto;
 
 public class InventarioDTO {
     public int codigo;
-    public String Pnombre;
-    public float Pcantidad;
-    public String Pfamilia;
-    public float Pprecio;
+    public String nombre;
+    public float cantidad;
+    public String familia;
+    public float precio;
 
     public int getCodigo() {
         return codigo;
@@ -15,35 +15,35 @@ public class InventarioDTO {
         this.codigo = codigo;
     }
 
-    public String getPnombre() {
-        return Pnombre;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setPnombre(String pnombre) {
-        Pnombre = pnombre;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public float getPcantidad() {
-        return Pcantidad;
+    public float getCantidad() {
+        return cantidad;
     }
 
-    public void setPcantidad(float pcantidad) {
-        Pcantidad = pcantidad;
+    public void setCantidad(float cantidad) {
+        this.cantidad = cantidad;
     }
 
-    public String getPfamilia() {
-        return Pfamilia;
+    public String getFamilia() {
+        return familia;
     }
 
-    public void setPfamilia(String pfamilia) {
-        Pfamilia = pfamilia;
+    public void setFamilia(String familia) {
+        this.familia = familia;
     }
 
-    public float getPprecio() {
-        return Pprecio;
+    public float getPrecio() {
+        return precio;
     }
 
-    public void setPprecio(float pprecio) {
-        Pprecio = pprecio;
+    public void setPrecio(float precio) {
+        this.precio = precio;
     }
 }

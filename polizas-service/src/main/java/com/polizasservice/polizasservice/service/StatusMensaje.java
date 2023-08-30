@@ -29,7 +29,7 @@ public class StatusMensaje {
               meta.put("status","ok");
               responseObj.set("meta",meta);
 
-              data.put("Mensaje",mensaje);
+              data.put("Mensaje:",mensaje);
               responseObj.set("data", data);
 
               responseArray.add(responseObj);
