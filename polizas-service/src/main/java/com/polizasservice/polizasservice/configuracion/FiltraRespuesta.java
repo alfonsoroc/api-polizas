@@ -1,6 +1,5 @@
 package com.polizasservice.polizasservice.configuracion;
 
-import org.hibernate.AssertionFailure;
 import org.springframework.web.util.HtmlUtils;
 
 public class FiltraRespuesta {
@@ -8,7 +7,7 @@ public class FiltraRespuesta {
     private FiltraRespuesta(){
         throw new AssertionError("No puede instanciar la clase");
     }
-    public static String LimpiarCode(String input) {
+    public static String limpiarCode(String input) {
         if (input == null) {
             return null;
         }

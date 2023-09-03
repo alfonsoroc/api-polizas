@@ -4,9 +4,6 @@ import com.polizasservice.polizasservice.service.DetalleArticulo;
 import com.polizasservice.polizasservice.service.Empleado;
 import com.polizasservice.polizasservice.service.Poliza;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Data {
 
     private Poliza poliza;

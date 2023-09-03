@@ -1,6 +1,5 @@
 package com.polizasservice.polizasservice.dao;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.polizasservice.polizasservice.configuracion.FiltraRespuesta;
 import com.polizasservice.polizasservice.configuracion.Loggs;
 import com.polizasservice.polizasservice.dto.InventarioDTO;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +29,8 @@ public class InventarioDao {
             for(InventarioDTO inventarioDTO: listInventarioDto){
                 InventarioDTO cleanInventario = new InventarioDTO();
                 cleanInventario.setCodigo(inventarioDTO.getCodigo());
-                cleanInventario.setNombre(FiltraRespuesta.LimpiarCode(inventarioDTO.getNombre()));
-                cleanInventario.setFamilia(FiltraRespuesta.LimpiarCode(inventarioDTO.getFamilia()));
+                cleanInventario.setNombre(FiltraRespuesta.limpiarCode(inventarioDTO.getNombre()));
+                cleanInventario.setFamilia(FiltraRespuesta.limpiarCode(inventarioDTO.getFamilia()));
                 cleanInventario.setCantidad(inventarioDTO.getCantidad());
                 cleanInventario.setPrecio(inventarioDTO.getPrecio());
                 cleanListInventario.add(cleanInventario);

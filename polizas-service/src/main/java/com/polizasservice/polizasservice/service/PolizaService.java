@@ -3,18 +3,13 @@ package com.polizasservice.polizasservice.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.polizasservice.polizasservice.configuracion.Loggs;
-import com.polizasservice.polizasservice.configuracion.FiltraRespuesta;
+import com.polizasservice.polizasservice.configuracion.MiException;
 import com.polizasservice.polizasservice.dao.PolizasDAO;
 import com.polizasservice.polizasservice.dto.PolizasDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -33,9 +28,10 @@ public class PolizaService {
     JsonResponseObject jsonResponseObjesct = new JsonResponseObject();
     StatusMensaje statusMensaje = new StatusMensaje();
 
+
+
     int opcion = 0;
 
-    String mensaje = "";
 
     public ObjectNode consultarPolizas(int poliza, int empleado) {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -43,17 +39,15 @@ public class PolizaService {
 
         try {
             List<PolizasDTO> polizasService = polizasDAO.consultarPolizas(poliza, empleado);
-            if (polizasService.size() > 0) {
-                responseService = jsonResponseObjesct.RespuestaJsonObject(polizasService);
+            if (!polizasService.isEmpty()) {
+                responseService = jsonResponseObjesct.respuestaJsonObject(polizasService);
 
             } else {
-                mensaje = "Error al consultar poliza con empleado:"+empleado;
-                responseService = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
+                responseService = statusMensaje.retornoMensajeStatus("Error al consultar poliza con empleado:"+empleado, opcion);
             }
             return responseService;
         } catch (Exception ex) {
-            mensaje = "Ha ocurrido un error al consultar la poliza";
-            responseService = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
+            responseService = statusMensaje.retornoMensajeStatus("Ha ocurrido un error al consultar la poliza", opcion);
             return responseService;
 
         }
@@ -61,7 +55,7 @@ public class PolizaService {
 
     }
 
-    public ObjectNode GuardarPoliza(float cantidad, int empleado, int sku) {
+    public ObjectNode guardarPoliza(float cantidad, int empleado, int sku) {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode responseObj = objectMapper.createObjectNode();
 
@@ -70,19 +64,15 @@ public class PolizaService {
         float cantidadService =(float) consultaInventario.get("data").get(0).get("cantidad").asDouble();
         if(cantidadService < cantidad){
 
-          return statusMensaje.RetornoMensajeStatus("Cantidad excede existencia de sku en inventario",opcion);
+          return statusMensaje.retornoMensajeStatus("Cantidad excede existencia de sku en inventario",opcion);
         }else {
             try {
                 List<PolizasDTO> listaPoliza = polizasDAO.GuardarPoliza(cantidad, empleado, sku);
-                if (listaPoliza.size() > 0) {
-                    responseObj = jsonResponseObjesct.RespuestaJsonObject(listaPoliza);
-                } else {
-
+                if (!listaPoliza.isEmpty()) {
+                    responseObj = jsonResponseObjesct.respuestaJsonObject(listaPoliza);
                 }
-
-            } catch (Exception ex) {
-                mensaje = "Ha ocurrido un error en los grabados de la poliza";
-                responseObj = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
+            } catch (Exception ex){
+                responseObj = statusMensaje.retornoMensajeStatus("Ha ocurrido un error en los grabados de la poliza", opcion);
 
                 return responseObj;
             }
@@ -90,34 +80,27 @@ public class PolizaService {
         }
     }
 
-    public ObjectNode ActaliazrPoliza(int poliza, float cantidad, int sku) {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode responseObj = objectMapper.createObjectNode();
-        Integer folio;
+    public ObjectNode actualiazarPoliza(int poliza, float cantidad, int sku) {
+        ObjectNode responseObj;
         ObjectNode consultaInventario = inventarioService.consultarInventario(sku);
 
         float cantidadService =(float) consultaInventario.get("data").get(0).get("cantidad").asDouble();
         if(cantidadService < cantidad){
 
-            return statusMensaje.RetornoMensajeStatus("Cantidad excede existencia de sku en inventario",0);
+            return statusMensaje.retornoMensajeStatus("Cantidad excede existencia de sku en inventario",0);
         }else {
 
             try {
-                folio = polizasDAO.ActaliazrPoliza(poliza, cantidad, sku);
-
+             Integer folio = polizasDAO.actualizarPoliza(poliza, cantidad, sku);
                 if (folio != null && folio == poliza) {
                     opcion = 1;
-                    mensaje = "Se ha actualizado correctamente la poliza #:" + poliza;
-                    responseObj = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
+                    responseObj = statusMensaje.retornoMensajeStatus("Se ha actualizado correctamente la poliza #:" + poliza, opcion);
                 } else {
-                    throw new Exception();
+                    throw new MiException("Error en actualizar Poliza");
                 }
 
             } catch (Exception ex) {
-
-                mensaje = "Ha ocurrido un error al actualizar la poliza #: " + poliza;
-                responseObj = statusMensaje.RetornoMensajeStatus(mensaje, 0);
+                responseObj = statusMensaje.retornoMensajeStatus("Ha ocurrido un error al actualizar la poliza #: " + poliza, 0);
 
             }
             return responseObj;
@@ -135,13 +118,11 @@ public class PolizaService {
 
             if (folio != null && folio == poliza) {
                 opcion = 1;
-                mensaje = "Se ha eliminado correctamenta la poliza #:"+folio;
-                responseObj = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
+                responseObj = statusMensaje.retornoMensajeStatus("Se ha eliminado correctamenta la poliza #:"+folio, opcion);
             }
 
         } catch (Exception ex) {
-            mensaje = "Ha ocurrido un error al eliminar la poliza" + poliza;
-            responseObj = statusMensaje.RetornoMensajeStatus(mensaje, opcion);
+            responseObj = statusMensaje.retornoMensajeStatus("Ha ocurrido un error al eliminar la poliza" + poliza, opcion);
 
         }
         return responseObj;

@@ -1,11 +1,11 @@
 package com.polizasservice.polizasservice.dto;
 
 public class InventarioDTO {
-    public int codigo;
-    public String nombre;
-    public float cantidad;
-    public String familia;
-    public float precio;
+    private int codigo;
+    private String nombre;
+    private float cantidad;
+    private String familia;
+    private float precio;
 
     public int getCodigo() {
         return codigo;

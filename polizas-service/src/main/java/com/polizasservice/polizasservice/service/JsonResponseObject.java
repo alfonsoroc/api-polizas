@@ -1,19 +1,17 @@
 package com.polizasservice.polizasservice.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.polizasservice.polizasservice.dto.Data;
 import com.polizasservice.polizasservice.dto.PolizasDTO;
-import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class JsonResponseObject {
-    public ObjectNode RespuestaJsonObject (List<PolizasDTO> resultadoConsultaPolizas) throws JsonProcessingException {
+    public ObjectNode respuestaJsonObject(List<PolizasDTO> resultadoConsultaPolizas)  {
         ObjectMapper objectMapper = new ObjectMapper();
         ArrayNode responseArray = objectMapper.createArrayNode();
         ObjectNode responseObj = objectMapper.createObjectNode();
@@ -35,7 +33,7 @@ public class JsonResponseObject {
             meta.put("status", "ok");
             responseObj.set("meta", meta);
 
-            poliza.setIDPoliza(polizasDTO.getIDPoliza());
+            poliza.setIDPoliza(polizasDTO.getIdpoliza());
             poliza.setCantidad(polizasDTO.getCantidad());
 
             dataObj.setPoliza(poliza);
@@ -47,7 +45,7 @@ public class JsonResponseObject {
 
 
 
-            detalleArticulo.setSKU(polizasDTO.getSKU());
+            detalleArticulo.setSku(polizasDTO.getSku());
             detalleArticulo.setNombre(polizasDTO.getArticulo());
 
             dataObj.setDetalleArticulo(detalleArticulo);

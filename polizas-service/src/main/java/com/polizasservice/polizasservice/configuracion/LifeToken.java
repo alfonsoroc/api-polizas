@@ -7,9 +7,6 @@ import java.util.Date;
 
 public class LifeToken {
 
-    private int validaEntrada;
-    private Boolean vidaToken;
-
     public Boolean validaVidaToken(String token) {
         Boolean life;
         String[] chunksToken = token.split("\\.");

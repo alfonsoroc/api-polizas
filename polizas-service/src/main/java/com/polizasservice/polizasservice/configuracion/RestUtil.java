@@ -6,8 +6,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.nio.charset.StandardCharsets;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -62,7 +60,7 @@ public class RestUtil {
 
         simpleHeaders = new HttpHeaders();
     }
-    private static final Logger logger = LoggerFactory.getLogger(RestUtil.class);
+
 
     public static ResponseEntity<String> post(String url, Object objPayload, HttpHeaders headers) throws JsonProcessingException, RestClientResponseException {
         return post(url, objPayload, null, headers);
@@ -90,13 +88,13 @@ public class RestUtil {
             payload = jsonPayload;
         }
 
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate;
 
         try {
             HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
             httpRequestFactory.setConnectionRequestTimeout(20 * 1000);
             httpRequestFactory.setConnectTimeout(20 * 1000);
-            httpRequestFactory.setReadTimeout(20 * 1000);
+
             StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
             stringHttpMessageConverter.setWriteAcceptCharset(true);
 
@@ -107,7 +105,9 @@ public class RestUtil {
             requestEntity = new HttpEntity<>(payload, headers);
             setAuthorization(requestEntity.getHeaders().getFirst(AUTHORIZATION));
 
-        } catch (Throwable e){
+        } catch (Exception e){
+            Loggs loggs = new Loggs();
+            loggs.loggsDebug(e.toString());
             throw e;
         }
 

@@ -2,19 +2,19 @@ package com.polizasservice.polizasservice.dto;
 
 public class PolizasDTO {
 
-    public int IDPoliza;
-    public float cantidad;
-    public String nombre;
-    public String apellido;
-    public int SKU;
-    public String articulo;
+    private int idpoliza;
+    private float cantidad;
+    private String nombre;
+    private String apellido;
+    private int sku;
+    private String articulo;
 
-    public int getIDPoliza() {
-        return IDPoliza;
+    public int getIdpoliza() {
+        return idpoliza;
     }
 
-    public void setIDPoliza(int IDPoliza) {
-        this.IDPoliza = IDPoliza;
+    public void setIdpoliza(int idpoliza) {
+        this.idpoliza = idpoliza;
     }
 
     public float getCantidad() {
@@ -41,12 +41,12 @@ public class PolizasDTO {
         this.apellido = apellido;
     }
 
-    public int getSKU() {
-        return SKU;
+    public int getSku() {
+        return sku;
     }
 
-    public void setSKU(int SKU) {
-        this.SKU = SKU;
+    public void setSku(int sku) {
+        this.sku = sku;
     }
 
     public String getArticulo() {

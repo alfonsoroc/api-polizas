@@ -1,22 +1,22 @@
 package com.polizasservice.polizasservice.service;
 
 public class DetalleArticulo {
-    private int SKU;
-    private  String Nombre;
+    private int sku;
+    private  String nombre;
 
-    public int getSKU() {
-        return SKU;
+    public int getSku() {
+        return sku;
     }
 
-    public void setSKU(int SKU) {
-        this.SKU = SKU;
+    public void setSku(int sku) {
+        this.sku = sku;
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
-        Nombre = nombre;
+        this.nombre = nombre;
     }
 }

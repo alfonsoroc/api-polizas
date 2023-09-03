@@ -4,16 +4,12 @@ package com.polizasservice.polizasservice.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.polizasservice.polizasservice.dao.PolizasDAO;
-import com.polizasservice.polizasservice.dto.InventarioDTO;
 import com.polizasservice.polizasservice.service.InventarioService;
 import com.polizasservice.polizasservice.service.PolizaService;
 import com.polizasservice.polizasservice.service.StatusMensaje;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/polizas")
@@ -29,7 +25,7 @@ public class PolizasController {
 
 
     @GetMapping("/buscar")
-    public ObjectNode BuscarPolizas(
+    public ObjectNode buscarPolizas(
             @RequestParam int folio,
             @RequestParam int empleado
     )  {
@@ -43,28 +39,28 @@ public class PolizasController {
         catch (Exception ex){
             int opcion = 0;
             String mensaje = "Ha ocurrido un error al consltar la poliza";
-            responseObj = statusMensaje.RetornoMensajeStatus(mensaje,opcion);
+            responseObj = statusMensaje.retornoMensajeStatus(mensaje,opcion);
             return responseObj;
         }
 
     }
 
     @GetMapping("/Guardar")
-    public ObjectNode GuardarPolizas(
+    public ObjectNode guardarPolizas(
             @RequestParam float cantidad,
             @RequestParam int empleado,
             @RequestParam int sku
             ) {
-        return polizaService.GuardarPoliza(cantidad,empleado,sku);
+        return polizaService.guardarPoliza(cantidad,empleado,sku);
     }
 
     @GetMapping("/Actualizar")
-    public ObjectNode Actualizar(
+    public ObjectNode actualizar(
             @RequestParam int poliza,
             @RequestParam float cantidad,
             @RequestParam int sku
     ){
-        return polizaService.ActaliazrPoliza(poliza,cantidad,sku);
+        return polizaService.actualiazarPoliza(poliza,cantidad,sku);
     }
 
     @GetMapping("/eliminar")

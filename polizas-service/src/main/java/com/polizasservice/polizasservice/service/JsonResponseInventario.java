@@ -1,19 +1,18 @@
 package com.polizasservice.polizasservice.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.polizasservice.polizasservice.dto.Data;
+
 import com.polizasservice.polizasservice.dto.InventarioDTO;
-import com.polizasservice.polizasservice.dto.PolizasDTO;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class JsonResponseInventario {
-    public ObjectNode RespuestaJsonInventario (List<InventarioDTO> resultadoConsultaInventario) throws JsonProcessingException {
+    public ObjectNode respuestaJsonInventario(List<InventarioDTO> resultadoConsultaInventario) {
         ObjectMapper objectMapper = new ObjectMapper();
         ArrayNode responseArray = objectMapper.createArrayNode();
         ObjectNode responseObj = objectMapper.createObjectNode();
@@ -22,7 +21,6 @@ public class JsonResponseInventario {
         for (InventarioDTO inventarioDTO : resultadoConsultaInventario) {
 
             ObjectNode meta = objectMapper.createObjectNode();
-            ObjectNode data = objectMapper.createObjectNode();
 
             meta.put("status", "ok");
             responseObj.set("meta", meta);
@@ -35,8 +33,6 @@ public class JsonResponseInventario {
         responseObj.set("data", articuloJson);
 
         responseArray.add(responseObj);
-
-
 
         return responseObj;
     }

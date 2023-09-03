@@ -1,15 +1,11 @@
 package com.polizasservice.polizasservice.dao;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import com.polizasservice.polizasservice.configuracion.FiltraRespuesta;
 import com.polizasservice.polizasservice.configuracion.Loggs;
 import com.polizasservice.polizasservice.dto.PolizasDTO;
 
-import com.polizasservice.polizasservice.service.StatusMensaje;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -30,22 +26,23 @@ public class PolizasDAO {
 
     Loggs loggs = new Loggs();
 
-    public List<PolizasDTO> consultarPolizas(int Ipoliza, int Iempleado) {
+    public List<PolizasDTO> consultarPolizas(int ipoliza, int iempleado) {
         List<PolizasDTO> listaLimpia = new ArrayList<>();
+        String sql = "select IDPoliza,cantidad,nombre,apellido,SKU,articulo from fun_buscarPoliza(?,?)";
 
         try {
             loggs.loggsDebug("SE EJECUTA LA FUNCION: fun_buscarPoliza");
-            String sql = "select IDPoliza,cantidad,nombre,apellido,SKU,articulo from fun_buscarPoliza(?,?)";
-            List<PolizasDTO> resultadoConsultaPolizas = jdbcTemplate.query(sql, new Object[]{Ipoliza, Iempleado}, new BeanPropertyRowMapper<>(PolizasDTO.class));
+            List<PolizasDTO> resultadoConsultaPolizas = jdbcTemplate.query(sql, new Object[]{ipoliza, iempleado}, new BeanPropertyRowMapper<>(PolizasDTO.class));
+
 
             for (PolizasDTO polizasDTO : resultadoConsultaPolizas) {
                 PolizasDTO polizaLimpia = new PolizasDTO();
-                polizaLimpia.setIDPoliza(polizasDTO.getIDPoliza());
+                polizaLimpia.setIdpoliza(polizasDTO.getIdpoliza());
                 polizaLimpia.setCantidad(polizasDTO.getCantidad());
-                polizaLimpia.setNombre(FiltraRespuesta.LimpiarCode(polizasDTO.getNombre()));
-                polizaLimpia.setApellido(FiltraRespuesta.LimpiarCode(polizasDTO.getApellido()));
-                polizaLimpia.setSKU(polizasDTO.getSKU());
-                polizaLimpia.setArticulo(FiltraRespuesta.LimpiarCode(polizasDTO.getArticulo()));
+                polizaLimpia.setNombre(FiltraRespuesta.limpiarCode(polizasDTO.getNombre()));
+                polizaLimpia.setApellido(FiltraRespuesta.limpiarCode(polizasDTO.getApellido()));
+                polizaLimpia.setSku(polizasDTO.getSku());
+                polizaLimpia.setArticulo(FiltraRespuesta.limpiarCode(polizasDTO.getArticulo()));
                 listaLimpia.add(polizaLimpia);
 
             }
@@ -64,7 +61,6 @@ public class PolizasDAO {
         String fechaService = fechaActual.format(formateador);
         String formatoFecha = "yyyy-MM-dd";
         DateFormat dateFormat = new SimpleDateFormat(formatoFecha);
-        ResponseEntity<String> respuesta = ResponseEntity.ok().build();
 
 
         List<PolizasDTO> listPolizasDto = new ArrayList<>();
@@ -77,12 +73,12 @@ public class PolizasDAO {
             listPolizasDto = jdbcTemplate.query(sql, new Object[]{cantidad, fechaConsulta, empleado, sku}, new BeanPropertyRowMapper<>(PolizasDTO.class));
             for (PolizasDTO polizasDTO : listPolizasDto) {
                 PolizasDTO polizaLimpia = new PolizasDTO();
-                polizaLimpia.setIDPoliza(polizasDTO.getIDPoliza());
+                polizaLimpia.setIdpoliza(polizasDTO.getIdpoliza());
                 polizaLimpia.setCantidad(polizasDTO.getCantidad());
-                polizaLimpia.setNombre(FiltraRespuesta.LimpiarCode(polizasDTO.getNombre()));
-                polizaLimpia.setApellido(FiltraRespuesta.LimpiarCode(polizasDTO.getApellido()));
-                polizaLimpia.setSKU(polizasDTO.getSKU());
-                polizaLimpia.setArticulo(FiltraRespuesta.LimpiarCode(polizasDTO.getArticulo()));
+                polizaLimpia.setNombre(FiltraRespuesta.limpiarCode(polizasDTO.getNombre()));
+                polizaLimpia.setApellido(FiltraRespuesta.limpiarCode(polizasDTO.getApellido()));
+                polizaLimpia.setSku(polizasDTO.getSku());
+                polizaLimpia.setArticulo(FiltraRespuesta.limpiarCode(polizasDTO.getArticulo()));
                 listaLimpiaPolizas.add(polizaLimpia);
             }
         } catch (Exception ex) {
@@ -91,7 +87,7 @@ public class PolizasDAO {
         return listaLimpiaPolizas;
     }
 
-    public Integer ActaliazrPoliza(int poliza, float cantidad, int sku) {
+    public Integer actualizarPoliza(int poliza, float cantidad, int sku) {
 
         String sql = "SELECT fun_actualizarPoliza(?,?,?)";
         Integer folio = 0;
