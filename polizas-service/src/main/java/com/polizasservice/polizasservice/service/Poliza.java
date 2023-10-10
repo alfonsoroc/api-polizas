@@ -2,7 +2,7 @@ package com.polizasservice.polizasservice.service;
 
 public class Poliza {
     private int IDPoliza;
-    private  float cantidad;
+    private  int cantidad;
 
     public int getIDPoliza() {
         return IDPoliza;
@@ -12,11 +12,11 @@ public class Poliza {
         this.IDPoliza = IDPoliza;
     }
 
-    public float getCantidad() {
+    public int getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(float cantidad) {
+    public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
 }

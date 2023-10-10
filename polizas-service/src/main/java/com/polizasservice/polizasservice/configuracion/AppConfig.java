@@ -1,20 +1,28 @@
 package com.polizasservice.polizasservice.configuracion;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.web.context.WebApplicationContext;
 
-@Component
+import javax.sql.DataSource;
+
+@Configuration
 @ConfigurationProperties(prefix = "app")
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppConfig {
     private String appId;
     private String appKey;
+
 
    @Value("${app.authUriNpos}")
     private String authUriNpos;
@@ -62,4 +70,7 @@ public class AppConfig {
     public void setAppKey(String appKey) {
         this.appKey = appKey;
     }
+
+
+
 }

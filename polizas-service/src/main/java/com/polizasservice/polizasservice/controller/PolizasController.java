@@ -24,6 +24,8 @@ public class PolizasController {
     PolizaService polizaService;
 
 
+
+
     @GetMapping("/buscar")
     public ObjectNode buscarPolizas(
             @RequestParam int folio,
@@ -38,7 +40,7 @@ public class PolizasController {
         }
         catch (Exception ex){
             int opcion = 0;
-            String mensaje = "Ha ocurrido un error al consltar la poliza";
+            String mensaje = "Ha ocurrido un error al consultar la poliza";
             responseObj = statusMensaje.retornoMensajeStatus(mensaje,opcion);
             return responseObj;
         }
@@ -51,7 +53,22 @@ public class PolizasController {
             @RequestParam int empleado,
             @RequestParam int sku
             ) {
-        return polizaService.guardarPoliza(cantidad,empleado,sku);
+
+        StatusMensaje statusMensaje = new StatusMensaje();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode responseObj = objectMapper.createObjectNode();
+        try {
+            return polizaService.guardarPoliza(cantidad,empleado,sku);
+        }
+        catch (Exception ex){
+            int opcion = 0;
+            String mensaje = "Ha ocurrido un error al guardar la poliza";
+            responseObj = statusMensaje.retornoMensajeStatus(mensaje,opcion);
+            return responseObj;
+        }
+
+
     }
 
     @GetMapping("/Actualizar")
@@ -60,14 +77,37 @@ public class PolizasController {
             @RequestParam float cantidad,
             @RequestParam int sku
     ){
-        return polizaService.actualiazarPoliza(poliza,cantidad,sku);
+        StatusMensaje statusMensaje = new StatusMensaje();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode responseObj = objectMapper.createObjectNode();
+        try {
+            return polizaService.actualiazarPoliza(poliza, cantidad, sku);
+        }
+        catch (Exception ex){
+            int opcion = 0;
+            String mensaje = "Ha ocurrido un error al Actualizar la poliza";
+            responseObj = statusMensaje.retornoMensajeStatus(mensaje,opcion);
+            return responseObj;
+        }
     }
 
     @GetMapping("/eliminar")
     public ObjectNode eliminar(
             @RequestParam int poliza
-    ){
-        return polizaService.eliminarPoliza(poliza);
+    ) {
+        StatusMensaje statusMensaje = new StatusMensaje();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode responseObj = objectMapper.createObjectNode();
+        try {
+            return polizaService.eliminarPoliza(poliza);
+        } catch (Exception ex) {
+            int opcion = 0;
+            String mensaje = "Ha ocurrido un error al eliminar la poliza";
+            responseObj = statusMensaje.retornoMensajeStatus(mensaje, opcion);
+            return responseObj;
+        }
     }
 
     @GetMapping("/inventario")

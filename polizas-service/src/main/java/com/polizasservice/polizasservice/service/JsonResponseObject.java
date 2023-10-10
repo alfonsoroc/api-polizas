@@ -16,10 +16,7 @@ public class JsonResponseObject {
         ArrayNode responseArray = objectMapper.createArrayNode();
         ObjectNode responseObj = objectMapper.createObjectNode();
 
-
         List<Data> dataList = new ArrayList<>();
-
-
 
         for (PolizasDTO polizasDTO : resultadoConsultaPolizas) {
             Data dataObj = new Data();

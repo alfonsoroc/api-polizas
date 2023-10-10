@@ -1,13 +1,37 @@
 package com.polizasservice.polizasservice;
 
+
 import org.junit.jupiter.api.Test;
+
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+
+@SpringBootTest()
+
 class PolizasServiceApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void buscarPolizas()  {
+
+
+
+    }
+
+    @Test
+    void guardarPolizas() {
+    }
+
+    @Test
+    void actualizar() {
+    }
+
+    @Test
+    void eliminar() {
+    }
+
+    @Test
+    void consultarInventario() {
+    }
+
 
 }

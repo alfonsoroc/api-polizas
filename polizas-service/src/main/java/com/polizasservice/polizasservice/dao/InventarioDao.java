@@ -13,7 +13,6 @@ import java.util.List;
 @Repository
 public class InventarioDao {
 
-
     @Autowired
     protected JdbcTemplate jdbcTemplateService;
     Loggs loggs = new Loggs();

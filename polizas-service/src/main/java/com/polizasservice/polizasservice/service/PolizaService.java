@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.sql.DataSource;
 import java.util.*;
 
 @Service
@@ -23,6 +24,7 @@ public class PolizaService {
     @Autowired
     protected PolizasDAO polizasDAO;
 
+
     Loggs loggs = new Loggs();
 
     JsonResponseObject jsonResponseObjesct = new JsonResponseObject();
@@ -31,6 +33,9 @@ public class PolizaService {
 
 
     int opcion = 0;
+
+    public PolizaService() {
+    }
 
 
     public ObjectNode consultarPolizas(int poliza, int empleado) {

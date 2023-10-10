@@ -3,11 +3,13 @@ package com.polizasservice.polizasservice.dto;
 public class PolizasDTO {
 
     private int idpoliza;
-    private float cantidad;
+    private int cantidad;
     private String nombre;
     private String apellido;
     private int sku;
     private String articulo;
+
+
 
     public int getIdpoliza() {
         return idpoliza;
@@ -17,11 +19,11 @@ public class PolizasDTO {
         this.idpoliza = idpoliza;
     }
 
-    public float getCantidad() {
+    public int getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(float cantidad) {
+    public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
 

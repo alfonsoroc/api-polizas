@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 @Order(value = 1)
 public class SessionFilter implements Filter {
     @Autowired
-    private AppConfig appConfig;
+    protected AppConfig appConfig;
 
     private String cachedToken = "";
 

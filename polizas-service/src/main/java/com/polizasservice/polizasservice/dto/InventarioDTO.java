@@ -3,9 +3,9 @@ package com.polizasservice.polizasservice.dto;
 public class InventarioDTO {
     private int codigo;
     private String nombre;
-    private float cantidad;
+    private int cantidad;
     private String familia;
-    private float precio;
+    private int precio;
 
     public int getCodigo() {
         return codigo;
@@ -23,11 +23,11 @@ public class InventarioDTO {
         this.nombre = nombre;
     }
 
-    public float getCantidad() {
+    public int getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(float cantidad) {
+    public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
 
@@ -39,11 +39,11 @@ public class InventarioDTO {
         this.familia = familia;
     }
 
-    public float getPrecio() {
+    public int getPrecio() {
         return precio;
     }
 
-    public void setPrecio(float precio) {
+    public void setPrecio(int precio) {
         this.precio = precio;
     }
 }

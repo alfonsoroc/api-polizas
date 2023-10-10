@@ -12,12 +12,10 @@ import java.util.List;
 
 @Service
 public class InventarioService {
-    private final InventarioDao inventarioDao;
+
 
     @Autowired
-    public InventarioService(InventarioDao inventarioDao) {
-        this.inventarioDao = inventarioDao;
-    }
+    private InventarioDao inventarioDao;
 
     public ObjectNode consultarInventario(Integer sku) {
         ObjectMapper objectMapper = new ObjectMapper();

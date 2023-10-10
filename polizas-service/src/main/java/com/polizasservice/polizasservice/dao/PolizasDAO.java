@@ -28,12 +28,11 @@ public class PolizasDAO {
 
     public List<PolizasDTO> consultarPolizas(int ipoliza, int iempleado) {
         List<PolizasDTO> listaLimpia = new ArrayList<>();
-        String sql = "select IDPoliza,cantidad,nombre,apellido,SKU,articulo from fun_buscarPoliza(?,?)";
+        String sql = "select idpoliza,cantidad,nombre,apellido,sku,articulo from fun_buscarPoliza(?,?)";
 
         try {
             loggs.loggsDebug("SE EJECUTA LA FUNCION: fun_buscarPoliza");
             List<PolizasDTO> resultadoConsultaPolizas = jdbcTemplate.query(sql, new Object[]{ipoliza, iempleado}, new BeanPropertyRowMapper<>(PolizasDTO.class));
-
 
             for (PolizasDTO polizasDTO : resultadoConsultaPolizas) {
                 PolizasDTO polizaLimpia = new PolizasDTO();
@@ -65,12 +64,12 @@ public class PolizasDAO {
 
         List<PolizasDTO> listPolizasDto = new ArrayList<>();
         List<PolizasDTO> listaLimpiaPolizas = new ArrayList<>();
-
-        String sql = "Select IDPoliza,cantidad,nombre,apellido,SKU,articulo from fun_crearPoliza(?,?,?,?)";
+        int iCantidad = (int)cantidad;
+        String sql = "Select idpoliza,cantidad,nombre,apellido,sku,articulo from fun_crearPoliza(?,?,?,?)";
         try {
             loggs.loggsDebug("Se ejecuta fun_crearPoliza");
             Date fechaConsulta = dateFormat.parse(fechaService);
-            listPolizasDto = jdbcTemplate.query(sql, new Object[]{cantidad, fechaConsulta, empleado, sku}, new BeanPropertyRowMapper<>(PolizasDTO.class));
+            listPolizasDto = jdbcTemplate.query(sql, new Object[]{iCantidad, fechaConsulta, empleado, sku}, new BeanPropertyRowMapper<>(PolizasDTO.class));
             for (PolizasDTO polizasDTO : listPolizasDto) {
                 PolizasDTO polizaLimpia = new PolizasDTO();
                 polizaLimpia.setIdpoliza(polizasDTO.getIdpoliza());
@@ -89,12 +88,12 @@ public class PolizasDAO {
 
     public Integer actualizarPoliza(int poliza, float cantidad, int sku) {
 
-        String sql = "SELECT fun_actualizarPoliza(?,?,?)";
+        String sql = "SELECT fun_actualizarPolizas(?,?,?)";
         Integer folio = 0;
-
+        int iCantidad = (int)cantidad;
         try {
-            loggs.loggsDebug("Se ejecuta fun_actualizarPoliza");
-            folio = jdbcTemplate.queryForObject(sql, new Object[]{poliza, cantidad, sku}, Integer.class);
+            loggs.loggsDebug("Se ejecuta fun_actualizarPolizas");
+            folio = jdbcTemplate.queryForObject(sql, new Object[]{poliza, iCantidad, sku}, Integer.class);
 
         } catch (Exception ex) {
           loggs.loggsDebug("Error al ejecutar funcion fun_actualizarPoliza"+ex);
